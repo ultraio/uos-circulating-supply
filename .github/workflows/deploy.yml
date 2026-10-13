@@ -1,0 +1,24 @@
+# Every push to main redeploys the Worker. The build itself runs in Cloudflare
+# Workers Builds (npx wrangler deploy); this only asks it to build main.
+# CF_DEPLOY_HOOK_URL = the Worker's deploy hook (Settings > Build > Deploy Hooks);
+# it can only trigger a build of main, so it is the sole credential here.
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare build
+        env:
+          HOOK: ${{ secrets.CF_DEPLOY_HOOK_URL }}
+        run: |
+          res=$(curl -sS --fail-with-body -X POST "$HOOK")
+          echo "$res" | jq -e '.success' > /dev/null || { echo "$res" | jq -c '.errors'; exit 1; }
+          echo "Cloudflare build $(echo "$res" | jq -r '.result.build_uuid') queued"

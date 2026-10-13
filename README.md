@@ -28,10 +28,10 @@ Live at `https://supply.ultra.io` (public), served by the Worker `uos-circulatin
 in the Cloudflare account that holds the `ultra.io` zone. No secrets, environment
 variables, API keys or build step are needed.
 
-Every push to `main` redeploys automatically via Cloudflare Workers Builds (Worker →
-Settings → Build, connected to this repo through the Cloudflare GitHub app). It runs
-`npx wrangler deploy`, which also attaches the `supply.ultra.io` custom domain declared in
-`wrangler.toml`; Cloudflare manages its DNS record and certificate.
+Every push to `main` redeploys automatically: `.github/workflows/deploy.yml` calls the
+Worker's Cloudflare deploy hook (repo secret `CF_DEPLOY_HOOK_URL`), and Cloudflare Workers
+Builds runs `npx wrangler deploy`. That also attaches the `supply.ultra.io` custom domain
+declared in `wrangler.toml`; Cloudflare manages its DNS record and certificate.
 
 Build settings, for reconnecting if ever needed: production branch `main`, build command
 *(empty)*, deploy command `npx wrangler deploy`, root directory `/`. The project name must
