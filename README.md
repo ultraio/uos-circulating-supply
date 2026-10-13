@@ -24,14 +24,31 @@ Data is cached for 5 minutes. If every RPC is down, the last good value is serve
 
 ## Deploy
 
-**Dashboard (no tooling):** Cloudflare dashboard → Workers & Pages → Create → Worker →
-name it `uos-circulating-supply` → Deploy → Edit code → paste `src/worker.js` → Deploy.
+Target: `https://supply.ultra.io`, served by a Worker in the Cloudflare account that holds
+the `ultra.io` zone. No secrets, environment variables, API keys or build step are needed.
 
-**CLI:** with Node.js installed, from this folder: `npx wrangler login`, then `npx wrangler deploy`.
+1. **Create the Worker from this repo.** Workers & Pages → Create → Import a repository →
+   connect GitHub (install the Cloudflare app on `ultraio`, limited to this repo) → select
+   `uos-circulating-supply`. Settings:
+   - Project name: `uos-circulating-supply` (must match `name` in `wrangler.toml`)
+   - Production branch: `main`
+   - Build command: *(empty)*
+   - Deploy command: `npx wrangler deploy`
+   - Root directory: `/`
 
-The URL will be `https://uos-circulating-supply.<your-subdomain>.workers.dev`. A custom
-domain (e.g. `supply.ultra.io`) can be added under the Worker's Settings → Domains & Routes
-if the domain is on Cloudflare.
+   Save and Deploy. Every push to `main` redeploys automatically from then on.
+2. **Check the workers.dev URL** shown after the build: `/circulating-supply` should return
+   a number and `/breakdown` the JSON.
+3. **Add the domain.** Worker → Settings → Domains & Routes → Add → Custom domain →
+   `supply.ultra.io`. Cloudflare creates the DNS record and certificate; it takes precedence
+   over the `*.ultra.io` wildcard for this hostname only.
+4. **Check** `https://supply.ultra.io/circulating-supply`.
+
+Leave the workers.dev URL enabled: `wrangler deploy` re-enables it on every deploy unless
+`workers_dev = false` is set in `wrangler.toml`. It serves the same public data.
+
+Manual alternative (no GitHub connection): with Node.js installed, run `npx wrangler login`
+and then `npx wrangler deploy` from this folder, then do step 3.
 
 ## Changing excluded wallets
 
