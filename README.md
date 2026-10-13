@@ -24,31 +24,24 @@ Data is cached for 5 minutes. If every RPC is down, the last good value is serve
 
 ## Deploy
 
-Target: `https://supply.ultra.io`, served by a Worker in the Cloudflare account that holds
-the `ultra.io` zone. No secrets, environment variables, API keys or build step are needed.
+Live at `https://supply.ultra.io` (public), served by the Worker `uos-circulating-supply`
+in the Cloudflare account that holds the `ultra.io` zone. No secrets, environment
+variables, API keys or build step are needed.
 
-1. **Create the Worker from this repo.** Workers & Pages → Create → Import a repository →
-   connect GitHub (install the Cloudflare app on `ultraio`, limited to this repo) → select
-   `uos-circulating-supply`. Settings:
-   - Project name: `uos-circulating-supply` (must match `name` in `wrangler.toml`)
-   - Production branch: `main`
-   - Build command: *(empty)*
-   - Deploy command: `npx wrangler deploy`
-   - Root directory: `/`
+Every push to `main` redeploys automatically via Cloudflare Workers Builds (Worker →
+Settings → Build, connected to this repo through the Cloudflare GitHub app). It runs
+`npx wrangler deploy`, which also attaches the `supply.ultra.io` custom domain declared in
+`wrangler.toml`; Cloudflare manages its DNS record and certificate.
 
-   Save and Deploy. Every push to `main` redeploys automatically from then on.
-2. **Check the workers.dev URL** shown after the build: `/circulating-supply` should return
-   a number and `/breakdown` the JSON.
-3. **Add the domain.** Worker → Settings → Domains & Routes → Add → Custom domain →
-   `supply.ultra.io`. Cloudflare creates the DNS record and certificate; it takes precedence
-   over the `*.ultra.io` wildcard for this hostname only.
-4. **Check** `https://supply.ultra.io/circulating-supply`.
+Build settings, for reconnecting if ever needed: production branch `main`, build command
+*(empty)*, deploy command `npx wrangler deploy`, root directory `/`. The project name must
+match `name` in `wrangler.toml`.
 
-Leave the workers.dev URL enabled: `wrangler deploy` re-enables it on every deploy unless
-`workers_dev = false` is set in `wrangler.toml`. It serves the same public data.
+Check a deploy: `https://supply.ultra.io/circulating-supply` returns a number and
+`/breakdown` the JSON.
 
-Manual alternative (no GitHub connection): with Node.js installed, run `npx wrangler login`
-and then `npx wrangler deploy` from this folder, then do step 3.
+Manual alternative: with Node.js installed, run `npx wrangler login` and then
+`npx wrangler deploy` from this folder.
 
 ## Changing excluded wallets
 
