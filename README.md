@@ -37,7 +37,7 @@ Build settings, for reconnecting if ever needed: production branch `main`, build
 *(empty)*, deploy command `npx wrangler deploy`, root directory `/`. The project name must
 match `name` in `wrangler.toml`.
 
-Check a deploy: `https://supply.ultra.io/circulating-supply` returns a number and
+Build logs: Worker → Deployments. Check a deploy: `https://supply.ultra.io/circulating-supply` returns a number and
 `/breakdown` the JSON.
 
 Manual alternative: with Node.js installed, run `npx wrangler login` and then
