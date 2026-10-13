@@ -1,3 +1,6 @@
 name = "uos-circulating-supply"
 main = "src/worker.js"
 compatibility_date = "2026-10-01"
+
+# Public custom domain, attached on every deploy (Cloudflare creates its DNS record).
+routes = [{ pattern = "supply.ultra.io", custom_domain = true }]
